@@ -1,0 +1,56 @@
+#include <stdio.h>
+
+int main()
+{
+    int a[2][3], b[2][3], c[2][3];
+    int i, j;
+
+    printf("Enter elements for first matrix:\n");
+
+    for(i = 0; i < 2; i++)
+    {
+        for(j = 0; j < 3; j++)
+        {
+            if(scanf("%d", &a[i][j]) != 1)
+            {
+                printf("Invalid input enter integers only.\n");
+                return 1;
+            }
+        }
+    }
+
+    printf("Enter elements for second matrix:\n");
+
+    for(i = 0; i < 2; i++)
+    {
+        for(j = 0; j < 3; j++)
+        {
+            if(scanf("%d", &b[i][j]) != 1)
+            {
+                printf("Invalid input enter integers only.\n");
+                return 1;
+            }
+        }
+    }
+
+    for(i = 0; i < 2; i++)
+    {
+        for(j = 0; j < 3; j++)
+        {
+            c[i][j] = a[i][j] + b[i][j];
+        }
+    }
+
+    printf("Addition of the two matrices is:\n");
+
+    for(i = 0; i < 2; i++)
+    {
+        for(j = 0; j < 3; j++)
+        {
+            printf("%d ", c[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
