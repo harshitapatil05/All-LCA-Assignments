@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    FILE *src, *dest;
+    char srcName[200], destName[200];
+    int ch;
+    long count = 0;
+
+    printf("Enter source file name: ");
+    if (fgets(srcName, sizeof(srcName), stdin) == NULL)
+    {
+        printf("Error: no input received.\n");
+        return 1;
+    }
+    srcName[strcspn(srcName, "\n")] = '\0';
+
+    printf("Enter destination file name: ");
+    if (fgets(destName, sizeof(destName), stdin) == NULL)
+    {
+        printf("Error: no input received.\n");
+        return 1;
+    }
+    destName[strcspn(destName, "\n")] = '\0';
+
+    if (srcName[0] == '\0' || destName[0] == '\0')
+    {
+        printf("Error: file name cannot be empty.\n");
+        return 1;
+    }
+
+    if (strcmp(srcName, destName) == 0)
+    {
+        printf("Error: source and destination cannot be the same file.\n");
+        return 1;
+    }
+
+    src = fopen(srcName, "rb");
+    if (src == NULL)
+    {
+        perror("Error opening source file");
+        return 1;
+    }
+
+    dest = fopen(destName, "wb");
+    if (dest == NULL)
+    {
+        perror("Error opening destination file");
+        fclose(src);
+        return 1;
+    }
+
+    while ((ch = fgetc(src)) != EOF)
+    {
+        if (fputc(ch, dest) == EOF)
+        {
+            printf("Error: could not write to the destination file.\n");
+            fclose(src);
+            fclose(dest);
+            return 1;
+        }
+        count++;
+    }
+
+    if (ferror(src))
+    {
+        printf("Error: could not read the source file.\n");
+        fclose(src);
+        fclose(dest);
+        return 1;
+    }
+
+    fclose(src);
+    if (fclose(dest) != 0)
+    {
+        printf("Error: could not save the destination file.\n");
+        return 1;
+    }
+
+    printf("File copied successfully (%ld characters).\n", count);
+    return 0;
+}
