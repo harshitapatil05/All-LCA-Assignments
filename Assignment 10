@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int isLeap(int year)
+{
+    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
+        return 1;
+    return 0;
+}
+
+int daysInMonth(int month, int year)
+{
+    int days[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    if (month == 1 && isLeap(year))
+        return 29;
+    return days[month];
+}
+
+int firstDayOfYear(int year)
+{
+    int y = year - 1;
+
+    return (1 + 5 * (y % 4) + 4 * (y % 100) + 6 * (y % 400)) % 7;
+}
+
+int main()
+{
+    char *names[12] = {"January", "February", "March", "April", "May", "June",
+                       "July", "August", "September", "October", "November", "December"};
+    char line[50];
+    char *end;
+    long input;
+    int year, month, day, i;
+    int start, total;
+
+    printf("Enter year (1 to 9999): ");
+    if (fgets(line, sizeof(line), stdin) == NULL)
+    {
+        printf("Error: no input received.\n");
+        return 1;
+    }
+
+    input = strtol(line, &end, 10);
+    if (end == line)
+    {
+        printf("Error: please enter a number.\n");
+        return 1;
+    }
+
+    while (*end == ' ')
+        end++;
+    if (*end != '\n' && *end != '\0')
+    {
+        printf("Error: please enter digits only.\n");
+        return 1;
+    }
+
+    if (input < 1 || input > 9999)
+    {
+        printf("Error: year must be between 1 and 9999.\n");
+        return 1;
+    }
+    year = (int)input;
+
+    start = firstDayOfYear(year);
+
+    for (month = 0; month < 12; month++)
+    {
+        total = daysInMonth(month, year);
+
+        printf("\n   ---- %s %d ----\n", names[month], year);
+        printf("Su Mo Tu We Th Fr Sa\n");
+
+        for (i = 0; i < start; i++)
+            printf("   ");
+
+        for (day = 1; day <= total; day++)
+        {
+            printf("%2d ", day);
+            if ((start + day) % 7 == 0)
+                printf("\n");
+        }
+        printf("\n");
+
+        start = (start + total) % 7;
+    }
+    return 0;
+}
